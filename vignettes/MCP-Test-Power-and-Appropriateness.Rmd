@@ -1,0 +1,312 @@
+---
+title: "MCP Test: Power and Appropriateness"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(ECxHelper)
+library(PMCMRplus)
+library(multcomp)
+library(tidyverse)
+```
+
+## Power Simulation
+
+```{r}
+cv <- 0.1
+N <- 10
+sigma <- 0.1
+mu <- 1*c(1,0.9,0.8,0.7)
+dat <- as.data.frame( t(plyr::ldply(mu,function(x){rnorm(N,x,sigma)})))
+names(dat) <- c("C","T1","T2","T3")
+
+dat <- pivot_longer(dat,cols=everything()) %>% mutate(name=factor(name))
+plot(dat$value~dat$name)
+res1 <- williamsTest(dat$value~dat$name,alternative = "less")
+getwilliamRes(res1)
+jonckheereTest(dat$value~dat$name)
+res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest",alternative = "less")
+res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest")
+summary(res2)
+```
+
+
+```{r}
+sigma <- 0.01
+mu <- 1*c(1,0.9,0.8,0.4,0.2,0.1)
+ndose <- length(mu)-1
+dat <- as.data.frame( t(plyr::ldply(mu,function(x){rlnorm(N,x,sigma)})))
+names(dat) <- c("C",paste0("T",1:ndose))
+
+dat <- pivot_longer(dat,cols=everything()) %>% mutate(name=factor(name))
+plot(dat$value~dat$name)
+ggplot(dat,aes(x=name,y=value))+geom_boxplot()+geom_point()
+res1 <- williamsTest(dat$value~dat$name,alternative = "less")
+summary(res1)
+getwilliamRes(res1)
+jonckheereTest(dat$value~dat$name,alternative = "less")
+kruskalTest(dat$value~dat$name,alternative = "less")
+cor.test(dat$value, as.numeric(dat$name), method = "kendall", alternative = "two.sided", continuity = TRUE)
+
+
+res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest",alternative = "less")
+# res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest")
+summary(res2)
+
+res3 <- shirleyWilliamsTest(value~name,data=dat,alternative = "less")
+summary(res3)
+```
+
+
+
+```{r}
+res <- stepDownTrendTest(Y ~ DOSE, data = trout,
+                         test = "jonckheereTest",
+                         alternative = "less")
+## print method
+res
+## summary method
+summary(res)
+
+williamsTest(Y ~ DOSE, data = trout,alternative = "less")
+
+ggplot(trout,aes(x=DOSE,y=Y))+geom_boxplot()+geom_point()
+```
+
+
+
+## Control FWER 
+
+| Observed p-values | Bonferroni | Holm Step-down   | Hochberg Step-up |
+|-------------------|------------|------------------|------------------|
+| $p_{r_1}$         | $\alpha/G$ | $\alpha/G$       | $\alpha/G$       |
+| $p_{r_2}$         |            | $\alpha/(G-1)$   | $\alpha/G$       |
+| . .               | . .        | . .              | . .              |
+| $p_{r_g}$         | $\alpha/G$ | $\alpha/(G-g+1)$ | $\alpha/(G-g+1)$ |
+| . .               | . .        | . .              | . .              |
+| $p_{r_{G-1}}$     | $\alpha/G$ | $\alpha/2$       | $\alpha/2$       |
+| $p_{r_G}$         | $\alpha/G$ | $\alpha$         | $\alpha$         |
+
+## Jonckheere Trend Test
+
+A step‐down procedure based on trend works as
+follows: First, the hypothesis that there is no trend in
+response with increasing dose is tested when the control
+and all dose groups are included in the test. Then, if the test
+for trend is significant, the high‐dose group is dropped
+from the dataset, and the hypothesis that there is no trend in the reduced dataset is tested. This process of dropping the
+highest treatment group and retesting the reduced dataset
+is continued until the first time the trend test is not significant.
+The highest dose in the reduced dataset at that stage
+is then declared to be the NOEC. Distinguishing features of
+step‐down procedures are that the tests of hypothesis must
+be performed in a given order, and that the outcome of each
+hypothesis test is evaluated before deciding whether to test
+the next hypothesis in the ordered sequence of hypotheses.
+It is these two aspects of these procedures that account for
+controlling the FWE rate.(???) Indeed, the special class of “fixed‐sequence” tests that
+we will describe fixes the critical level at 0.05 for each
+comparison but still bound the FWE rate at 0.05. Thus,
+step‐down methods are generally preferable to the singlestep
+methods as long as the population response means
+are monotonic. (???)
+
+Tests based on trend are logically consistent with the
+anticipated monotone pattern of responses in toxicity tests.
+Step‐down procedures make use of this ordered alternative
+by ordering the tests of hypotheses. This minimizes the
+number of comparisons that need to be made.
+
+
+```{r}
+
+```
+
+
+
+```{r}
+## Example from Sachs (1997, p. 402)
+x <- c(106, 114, 116, 127, 145,
+       110, 125, 143, 148, 151,
+       136, 139, 149, 160, 174)
+g <- gl(3,5)
+levels(g) <- c("A", "B", "C")
+
+## Chacko's test
+chackoTest(x, g)
+
+## Cuzick's test
+cuzickTest(x, g)
+
+## Johnson-Mehrotra test
+johnsonTest(x, g)
+
+## Jonckheere-Terpstra test
+jonckheereTest(x, g)
+
+## Le's test
+leTest(x, g)
+
+## Spearman type test
+spearmanTest(x, g)
+
+## Murakami's BWS trend test
+bwsTrendTest(x, g)
+
+## Fligner-Wolfe test
+flignerWolfeTest(x, g)
+```
+
+
+**References**
+- Jonckheere, A. R. (1954) A distribution-free k-sample test against ordered alternatives. Biometrica 41, 133–145.
+
+- Kloke, J., McKean, J. W. (2015) Nonparametric statistical methods using R. Boca Raton, FL: Chapman & Hall/CRC.
+
+## Shirley-Williams Test
+
+```{r}
+
+
+## Example from Sachs (1997, p. 402)
+x <- c(106, 114, 116, 127, 145,
+110, 125, 143, 148, 151,
+136, 139, 149, 160, 174)
+g <- gl(3,5)
+levels(g) <- c("0", "I", "II")
+
+## Williams Test
+williamsTest(x ~ g)
+plot(x~g)
+
+## Example from Shirley (1977)
+## Reaction times of mice to stimuli to their tails.
+x <- c(2.4, 3, 3, 2.2, 2.2, 2.2, 2.2, 2.8, 2, 3,
+ 2.8, 2.2, 3.8, 9.4, 8.4, 3, 3.2, 4.4, 3.2, 7.4, 9.8, 3.2, 5.8,
+ 7.8, 2.6, 2.2, 6.2, 9.4, 7.8, 3.4, 7, 9.8, 9.4, 8.8, 8.8, 3.4,
+ 9, 8.4, 2.4, 7.8)
+g <- gl(4, 10)
+
+plot(x~g)
+## Shirley's test
+## one-sided test using look-up table
+shirleyWilliamsTest(x ~ g, alternative = "greater")
+
+## Chacko's global hypothesis test for 'greater'
+chackoTest(x , g)
+
+## post-hoc test, default is standard normal distribution (NPT'-test)
+summary(chaAllPairsNashimotoTest(x, g, p.adjust.method = "none"))
+
+## same but h-distribution (NPY'-test)
+chaAllPairsNashimotoTest(x, g, dist = "h")
+
+## NPM-test
+NPMTest(x, g)
+
+## Hayter-Stone test
+hayterStoneTest(x, g)
+
+## all-pairs comparisons
+hsAllPairsTest(x, g)
+```
+
+
+
+## Nonparametric MCP and trend test
+
+- Shirley-type (non-parametric version of Williams Test)
+- Other provided by ***nparcomp*
+
+
+The function **nparcomp** computes the estimator of nonparametric relative contrast effects, simultaneous confidence intervals for the effects and simultaneous p-values based on special contrasts like *"Tukey", "Dunnett", "Sequen", "Williams", "Changepoint", "AVE", "McDermott", "Marcus", "UmbrellaWilliams", "UserDefined"*. The statistics are computed using multivariate normal distribution, multivariate Satterthwaite t-Approximation and multivariate transformations (Probit and Logit transformation function). The function 'nparcomp' also computes one-sided and two-sided confidence intervals and p-values. The confidence intervals can be plotted.
+
+```{r}
+library(nparcomp)
+data(liver)
+
+  # Williams Contrast
+
+a<-nparcomp(weight ~dosage, data=liver, asy.method = "probit",
+            type = "Williams", alternative = "two.sided", 
+            plot.simci = TRUE, info = FALSE,correlation=TRUE)
+summary(a)
+```
+
+
+```{r}
+ # Dunnett dose 3 is baseline
+
+c<-nparcomp(weight ~dosage, data=liver, asy.method = "probit",
+            type = "Dunnett", control = "3",
+            alternative = "two.sided", info = FALSE)
+summary(c)
+plot(c)
+
+```
+
+
+```{r}
+data(colu)
+
+  # Tukey comparison- one sided(lower)
+
+a<-nparcomp(corpora~ dose, data=colu, asy.method = "mult.t",
+            type = "Tukey",alternative = "less", 
+            plot.simci = TRUE, info = FALSE)
+summary(a)
+
+
+ # Tukey comparison- one sided(greater)
+
+b<-nparcomp(corpora~ dose, data=colu, asy.method = "mult.t",
+            type = "Tukey",alternative = "greater", 
+            plot.simci = TRUE, info = FALSE)
+summary(b)
+```
+
+
+
+## Nonparametric equivalent for two sample t-test
+
+The function npar.t.test performs two sample tests for the nonparametric Behrens-Fisher problem, that is testing the hypothesis
+
+$$H_0: p=1/2,$$
+
+where p denotes the relative effect of 2 independent samples and computes confidence intervals for the relative effect p. The statistics are computed using standard normal distribution, Satterthwaite t-Approximation and variance stabilising transformations (Probit and Logit transformation function). For small samples there is also a studentized permutation test implemented. npar.t.test also computes one-sided and two-sided confidence intervals and p-values. The confidence interval can be plotted.
+
+
+```{r}
+data(impla)
+a<-npar.t.test(impla~group, data = impla, method = "t.app",
+               alternative = "two.sided", info=FALSE)
+summary(a)
+plot(a)               
+b<-npar.t.test(impla~group, data = impla, method= "permu",
+               alternative = "two.sided", info=FALSE)
+summary(b)
+plot(b)
+```
+
+
+## 
+
+```{r}
+b<-mctp(weight ~dosage, data=liver, asy.method = "fisher",
+        type = "Dunnett", alternative = "two.sided", 
+        plot.simci = TRUE, info = FALSE)
+summary(b)
+```
+
+
+## References
+
+- Frank Konietschke \& Ludwig A. Hothorn (2012) Evaluation of Toxicological Studies Using a Nonparametric Shirley-Type Trend Test for Comparing Several Dose Levels with a Control Group, Statistics in Biopharmaceutical Research, 4:1, 14-27, DOI: 10.1080/19466315.2011.633861

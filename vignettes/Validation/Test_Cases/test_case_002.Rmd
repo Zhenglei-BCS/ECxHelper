@@ -1,0 +1,15 @@
+#' @title GLP DRC Test Cases 002
+#' @section Last Updated By: 
+#' Ellis Hughes
+#' @section Last Update Date:
+#' 2020/01/29
+
++ _Test Cases_
+
+  + Setup: Nonlinear regression for quantitative data 2
+   
+  + T 2: Output an RTF using a dataframe requiring multiple pages of output and verify output and paging are appropiate
+    + T 2.1: Verify document outputs as an RTF and opens in Word
+    + T 2.2: Verify output has column headers "Header1", "Header2" above the table, a title "Title" at the top, and a footnote "Footnote" at the bottom
+    + T 2.3: Verify output has the column headers, title, and footnote repeat on each page
+

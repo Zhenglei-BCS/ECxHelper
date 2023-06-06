@@ -1,0 +1,24 @@
+---
+title: "SAS_Dunn"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ECxHelper)
+```
+
+
+```{r}
+library(haven)
+
+dat <- read_sas("~/Projects/ecxhelper/data-raw/algae.sas7bdat")
+View(dat)
+
+```
+

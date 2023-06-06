@@ -1,0 +1,38 @@
+---
+title: "Issues with using the shiny-drc App"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ECxHelper)
+library(drc)
+library(tidyverse)
+```
+
+```{r}
+extdat <- read.csv("../../data-raw/Raw_Data_4_Imidazos_(002).csv",sep=";")
+str(extdat)
+# extdat$Concentration <- as.numeric(extdat$Concentration)
+extdat <- extdat %>% mutate(y_trans=dead/total)
+mod <- drm(y_trans~Concentration,weights = total,data=extdat%>%filter(treatment=="experiment 1"),fct=LL2.2(),type="binomial")
+
+mod <- drm(y_trans~Concentration,weights = total,curveid = treatment,data=extdat%>%filter(treatment!="experiment 1"),fct=LL2.2(),type="binomial")
+ # fit model
+
+  # fit all models
+  all_mods <- mselect(mod, fctList = list(LL.2(), LL.3(), LL.3u(), LL.4(), 
+                                          W1.2(),  W1.3(), W1.4(), W2.2(), W2.3(), W2.4(),
+                                          BC.4(), BC.5(),
+                                          LL2.2(), LL2.3(), LL2.3u(), LL2.4(), LL2.5(),
+                                          AR.2(), AR.3(),
+                                          MM.2(), MM.3()))
+  
+  rownames(all_mods)[which.min(all_mods[ , 2])]
+```
+

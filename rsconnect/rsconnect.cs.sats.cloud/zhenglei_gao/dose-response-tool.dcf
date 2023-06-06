@@ -1,0 +1,12 @@
+name: dose-response-tool
+title: Dose-Response-Tool
+username: zhenglei_gao
+account: zhenglei_gao
+server: rsconnect.cs.sats.cloud
+hostUrl: https://rsconnect.cs.sats.cloud/__api__
+appId: 204
+bundleId: 945
+url: https://rsconnect.cs.sats.cloud/content/204/
+when: 1647451471.30232
+asMultiple: FALSE
+asStatic: FALSE

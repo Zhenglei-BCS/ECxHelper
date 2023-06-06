@@ -1,0 +1,19 @@
+pandoc: 2.7.3
+pkgdown: 1.5.1
+pkgdown_sha: ~
+articles:
+  Algae: Algae.html
+  BootStrapping: BootStrapping.html
+  ECxValidation: ECxValidation.html
+  JTtest: JTtest.html
+  MCP-Test-Power-and-Appropriateness: MCP-Test-Power-and-Appropriateness.html
+  specification_001: Validation/Specifications/specification_001.html
+  specification_002: Validation/Specifications/specification_002.html
+  test_case_001: Validation/Test_Cases/test_case_001.html
+  test_case_002: Validation/Test_Cases/test_case_002.html
+  Data-Overview: articles/Data-Overview.html
+  Generic-Simple-Report: articles/Generic-Simple-Report.html
+  Issues-with-using-the-shiny-drc-App: articles/Issues-with-using-the-shiny-drc-App.html
+  SAS_Dunn: articles/SAS_Dunn.html
+last_built: 2022-11-03T15:18Z
+

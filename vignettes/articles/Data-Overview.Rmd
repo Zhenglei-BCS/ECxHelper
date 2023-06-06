@@ -1,0 +1,35 @@
+---
+title: "Data Overview"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ECxHelper)
+library(tidyverse)
+```
+
+```{r eval=FALSE}
+oecd201 <- read.csv("~/Projects/ecxhelper/data-raw/OECD_201.csv")
+oecd201$Treatment <- factor(oecd201$Treatment,levels=unique(oecd201$Treatment))
+```
+
+```{r}
+sum1 <- oecd201 %>% group_by(Time,Treatment) %>% summarise(Yield_mean=mean(Yield),Yield_sd=sd(Yield),GrowthRate_mean=mean(GrowthRate),GrowthRate_sd=sd(GrowthRate))
+sum0 <- sum1%>%filter(Treatment=="Control")%>%rename(Yield0=Yield_mean,GrowthRate0=GrowthRate_mean)%>%dplyr::select(c(Time,Yield0,GrowthRate0))
+# sum0
+sumtab <- left_join(sum1%>%filter(Time>0),sum0) %>% mutate(Yield_Inhibition=(Yield0-Yield_mean)/Yield0*100,GrowthRate_Inhibition=(GrowthRate0-GrowthRate_mean)/GrowthRate0*100) %>% dplyr::select(c(Time,Treatment,Yield_mean,Yield_sd,Yield_Inhibition,GrowthRate_mean,GrowthRate_sd,GrowthRate_Inhibition))
+```
+
+```{r}
+sumtab%>%knitr::kable(.,digits = 2)%>%kableExtra::kable_classic()
+```
+

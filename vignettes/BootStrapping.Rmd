@@ -1,0 +1,97 @@
+---
+title: "BootStrapping"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BootStrapping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ECxHelper)
+library(tidyverse)
+```
+
+```{r}
+dat1 <-  readxl::read_excel("~/ECx/DLT/DLT_worm.xlsx",sheet = "repro")
+dat <-dat1 %>% gather(Treatment,Repro,-c("Time (d)")) %>% mutate(Dose=as.numeric(Treatment)) %>% filter(!is.na(Repro)) %>% mutate(Dose=replace_na(Dose,0))
+names(dat)[1] <- "Time"
+ggplot(subset(dat,Time>0),aes(x=Dose,y=Repro))+geom_boxplot(aes(group=Dose))+geom_point() +geom_smooth()
+subset(dat,Time>0) %>% group_by(Dose)%>%summarise(mean=mean(Repro),var=var(Repro))
+dat<- subset(dat,Time>0)
+```
+
+
+```{r}
+mod <- drm(Repro~Dose,fct = LN.4(),type="continuous",data=dat)
+#mod <- drm(Repro~Dose,fct = LL2.4(),type="Poisson",data=dat)
+#ECxHelper:::ED.ZG(mod,respLev=c(10,20),trend="Decrease")
+plot(mod,type="all")
+fctList <- list(LL2.4(),W1.4(),LL.4())
+
+res <- mselect.ZG(mod,fctList = fctList )
+modList <- res$modList
+edResTab <- mselect.ED(modList = modList,respLev = c(10,20,50),trend="Decrease")
+resComp <- drcCompare(modRes = res,trend="Decrease")
+ECxHelper:::plot.modList(modList[1:2])
+```
+
+```{r}
+knitr::kable(edResTab[1:9,])
+```
+
+```{r}
+knitr::kable(resComp)
+```
+
+
+The bootstrap sample is the same size as the original dataset. As a result, some samples will be represented multiple times in the bootstrap sample while others will not be selected at all.
+
+```{r}
+library(boot)
+getEC <- function(dat,idx,respLev=10,fct=LN.4()){
+  dat <- dat[idx,]
+  mod <- try(drm(Repro~Dose,fct = fct,type="continuous",data=dat),silent=T)
+  res <- try(ECxHelper:::ED.ZG(mod,respLev=respLev,trend="Decrease"),silent = T)
+  if(class(res)!="try-error") return(res[1,1]) else return(NA)
+  #print(res[1,1])
+  
+}
+
+getECx <- function(dat,respLev=10,fct=LN.4(),type="continuous"){
+  
+  mod <- try(drm(Repro~Dose,fct = fct,type=type,data=dat),silent=T)
+  res <- try(ECxHelper:::ED.ZG(mod,respLev=respLev,trend="Decrease"),silent = T)
+  if(class(res)!="try-error") return(data.frame(t(res[,1]))) else return(data.frame(t(rep(NA,length(respLev)))))
+  #print(res[1,1])
+  
+}
+dat <- dat%>%mutate(Trt=factor(Dose))
+library(rsample)
+
+res_bt <-bootstraps(dat, times = 200,strata="Trt", apparent = F) %>%  mutate(models = map(splits, ~ getECx(.x, respLev=c(10,20)))) 
+# nlin_bt
+res_bt <- res_bt%>%
+  dplyr::select(-splits) %>% unnest(cols = c(models))  #
+
+res_bt%>% summarise(mean10=median(EC.10,na.rm=T),mean20=mean(EC.20,na.rm=T),Q110=quantile(EC.10,0.25,na.rm = T),Q310=quantile(EC.10,0.75,na.rm = T))
+  # Turn it into a tibble by stacking the `models` col
+  # unnest()%>%
+  # Get rid of unneeded columns
+  # dplyr::select(id, term, estimate)
+
+bsTind <- boot(dat, statistic=getEC, sim="ordinary",strata=dat$Trt,R=999)
+bsTind <- boot(dat, statistic=getEC, sim="balanced",strata=dat$Trt,R=999)
+
+boot.ci(bsTind, conf=0.95, type="perc")
+summary(bsTind$t)
+```
+
+

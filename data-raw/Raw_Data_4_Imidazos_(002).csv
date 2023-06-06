@@ -1,0 +1,73 @@
+number;treatment;Concentration;percent;dead;total
+1;experiment 1;1.02904;100;2;2
+2;experiment 1;1.02904;100;2;2
+3;experiment 1;1.02904;100;2;2
+4;experiment 1;0.051452;100;2;2
+5;experiment 1;0.051452;100;2;2
+6;experiment 1;0.051452;100;2;2
+7;experiment 1;0.0025726;100;2;2
+8;experiment 1;0.0025726;100;2;2
+9;experiment 1;0.0025726;100;2;2
+10;experiment 1;0.00012863;100;2;2
+11;experiment 1;0.00012863;100;2;2
+12;experiment 1;0.00012863;100;2;2
+13;experiment 1;6.4315E-06;50;1;2
+14;experiment 1;6.4315E-06;50;1;2
+15;experiment 1;6.4315E-06;100;2;2
+16;experiment 1;3.216E-07;0;0;2
+17;experiment 1;3.216E-07;0;0;2
+18;experiment 1;3.216E-07;0;0;2
+19;experiment 2;1.19504;100;2;2
+20;experiment 2;1.19504;100;2;2
+21;experiment 2;1.19504;100;2;2
+22;experiment 2;0.059752;100;2;2
+23;experiment 2;0.059752;100;2;2
+24;experiment 2;0.059752;100;2;2
+25;experiment 2;0.0029876;100;2;2
+26;experiment 2;0.0029876;100;2;2
+27;experiment 2;0.0029876;100;2;2
+28;experiment 2;0.00014938;100;2;2
+29;experiment 2;0.00014938;100;2;2
+30;experiment 2;0.00014938;100;2;2
+31;experiment 2;0.000007469;100;2;2
+32;experiment 2;0.000007469;100;2;2
+33;experiment 2;0.000007469;100;2;2
+34;experiment 2;3.735E-07;100;2;2
+35;experiment 2;3.735E-07;50;1;2
+36;experiment 2;3.735E-07;50;1;2
+37;experiment 3 ;1.31878;100;2;2
+38;experiment 3 ;1.31878;100;2;2
+39;experiment 3 ;1.31878;100;2;2
+40;experiment 3 ;0.065939;100;2;2
+41;experiment 3 ;0.065939;100;2;2
+42;experiment 3 ;0.065939;100;2;2
+43;experiment 3 ;0.00329695;100;2;2
+44;experiment 3 ;0.00329695;100;2;2
+45;experiment 3 ;0.00329695;50;1;2
+46;experiment 3 ;0.0001648475;0;0;2
+47;experiment 3 ;0.000164848;0;0;2
+48;experiment 3 ;0.000164848;0;0;2
+49;experiment 3 ;8.2424E-06;0;0;2
+50;experiment 3 ;8.2424E-06;50;1;2
+51;experiment 3 ;8.2424E-06;50;1;2
+52;experiment 3 ;4.121E-07;50;1;2
+53;experiment 3 ;4.121E-07;50;1;2
+54;experiment 3 ;4.121E-07;50;1;2
+55;experiment 4;0.88484;0;0;2
+56;experiment 4;0.88484;0;0;2
+57;experiment 4;0.88484;50;1;2
+58;experiment 4;0.044242;0;0;2
+59;experiment 4;0.044242;0;0;2
+60;experiment 4;0.044242;50;1;2
+61;experiment 4;0.0022121;0;0;2
+62;experiment 4;0.0022121;0;0;2
+63;experiment 4;0.0022121;0;0;2
+64;experiment 4;0.000110605;50;1;2
+65;experiment 4;0.000110605;0;0;2
+66;experiment 4;0.000110605;0;0;2
+67;experiment 4;5.5303E-06;0;0;2
+68;experiment 4;5.5303E-06;0;0;2
+69;experiment 4;5.5303E-06;50;1;2
+70;experiment 4;2.765E-07;0;0;2
+71;experiment 4;2.765E-07;0;0;2
+72;experiment 4;2.765E-07;0;0;2

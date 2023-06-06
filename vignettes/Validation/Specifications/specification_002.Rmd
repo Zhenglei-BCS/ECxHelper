@@ -1,0 +1,11 @@
+#' @title Specifications For Deriving Confidence Bands for the Model
+#' @section Last updated By:
+#' Zhenglei Gao
+#' @section Last Update Date:
+#' 2020/10/23
+
++ _Specifications_
+  + 2.1 Presentation must explain validation procedure.
+  + 2.2 Presentation will be between 15-20 minutes long
+  + 2.3 Be entertaining, sucess measures by causing at least 3 people to laugh.
+  + 2.4 (Optional) Fame and Glamour and start branded accessories chain.

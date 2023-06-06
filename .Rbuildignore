@@ -1,0 +1,5 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^vignettes/MCP-Test-Power-and-Appropriateness\.Rmd$
+^vignettes/articles$
+^data-raw$

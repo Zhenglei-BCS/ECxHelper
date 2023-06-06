@@ -1,0 +1,23 @@
+navbar:
+  components:
+    home: ~
+    articles:
+     text: Articles
+     menu:
+     - text: Examples
+     - text: MCP-Test-Power-and-Appropriateness 
+     - href: MCP-Test-Power-and-Appropriateness.html
+     - text: Title A1
+       href: articles/Algae.html
+     - text: Title A2
+       href: articles/BootStrapping.html
+     - text: -------
+     - text: "Demo"
+     - text: Title B1
+       menu:
+       - text "Sub-category B11"
+       - href: articles/Validation/Test_Cases/test_case_001.html
+     twitter:
+       icon: "fab fa-twitter fa-lg"
+       href: https://twitter.com/hadleywickham
+

@@ -1,0 +1,32 @@
+---
+title: "Williams Test"
+author: "Zhenglei Gao"
+date: "11/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## my
+
+```{r}
+library(ECxHelper)
+library(tidyverse)
+dat <- ECxHelper::Raw2Long(path.expand("~/ECx/Algae/Data/Algae_154061210.xls"),sheet="InputRawData",DataType = "Algae")
+```
+
+
+```{r}
+datTn <- subset(dat,Time==72)
+
+datTn %>% group_by(Treatment,Concentration)%>% summarise(GR=mean(GR)) %>% as.data.frame %>% mutate(Inhibition=(GR-first(GR))/GR[1]*100) ##%>% View## mutate(Inhibition=(GR-0.0715)/0.0715*100) %>% View
+```
+
+```{r}
+ggplot(datTn,aes(x=Treatment,y=GR))+geom_boxplot()+geom_point()+scale_y_log10()
+```
+
+## Williams' Test
+

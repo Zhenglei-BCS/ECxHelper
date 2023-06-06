@@ -1,0 +1,89 @@
+---
+title: "Issues with Jonckheere Test"
+author: "Zhenglei Gao"
+date: "4/9/2021"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simulation
+
+```{r}
+library(PMCMRplus)
+library(multcomp)
+library(tidyverse)
+```
+
+```{r}
+res <- stepDownTrendTest(Y ~ DOSE, data = trout,
+                         test = "jonckheereTest",
+                         alternative = "less")
+
+ggplot(trout,aes(x=DOSE,y=Y))+geom_boxplot()+geom_point()
+## print method
+res
+## summary method
+summary(res)
+
+williamsTest(Y ~ DOSE, data = trout)
+```
+
+
+## Example 1
+
+```{r}
+cv <- 0.1
+N <- 10
+sigma <- 0.1
+mu <- 1*c(1,0.9,0.8,0.7)
+dat <- as.data.frame( t(plyr::ldply(mu,function(x){rnorm(N,x,sigma)})))
+names(dat) <- c("C","T1","T2","T3")
+
+dat <- pivot_longer(dat,cols=everything()) %>% mutate(name=factor(name))
+o <- order(dat$name)
+dat <- dat[o,]
+plot(dat$value~dat$name)
+res1 <- williamsTest(dat$value~dat$name,alternative = "less")
+summary(res1)
+jonckheereTest(dat$value~dat$name)
+res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest",alternative = "less")
+## res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest")
+summary(res2)
+```
+
+
+
+## Example 2
+
+```{r}
+sigma <- 0.01
+mu <- 1*c(1,0.9,0.8,0.4,0.2,0.1)
+ndose <- length(mu)-1
+dat <- as.data.frame( t(plyr::ldply(mu,function(x){rlnorm(N,x,sigma)})))
+names(dat) <- c("C",paste0("T",1:ndose))
+
+dat <- pivot_longer(dat,cols=everything()) %>% mutate(name=factor(name))
+plot(dat$value~dat$name)
+ggplot(dat,aes(x=name,y=value))+geom_boxplot()+geom_point()
+res1 <- williamsTest(dat$value~dat$name,alternative = "less")
+summary(res1)
+
+jonckheereTest(dat$value~dat$name,alternative = "less")
+kruskalTest(dat$value~dat$name,alternative = "less")
+cor.test(dat$value, as.numeric(dat$name), method = "kendall", alternative = "two.sided", continuity = TRUE)
+
+
+res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest",alternative = "less")
+# res2 <- stepDownTrendTest(value~name,data=dat,test="jonckheereTest")
+summary(res2)
+
+res3 <- shirleyWilliamsTest(value~name,data=dat,alternative = "less")
+summary(res3)
+```
+
+
